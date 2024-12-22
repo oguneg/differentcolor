@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find the Different Color Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #headers {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #game-container {
+            display: grid;
+            gap: 5px;
+        }
+        .square {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="headers">
+        <h1>Current Level: <span id="current-level">1</span></h1>
+        <h1>Best Level: <span id="best-level">1</span></h1>
+    </div>
+    <div id="game-container"></div>
+    <script>
+        let level = 1;
+        let bestLevel = 1;
+        const gameContainer = document.getElementById('game-container');
+        const currentLevelElement = document.getElementById('current-level');
+        const bestLevelElement = document.getElementById('best-level');
+
+        function startGame() {
+            gameContainer.innerHTML = '';
+            currentLevelElement.textContent = level;
+            if (level > bestLevel) {
+                bestLevel = level;
+                bestLevelElement.textContent = bestLevel;
+            }
+
+            const gridSize = level + 2; // Increase grid size with level
+            gameContainer.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+
+            const baseColor = getRandomColor();
+            const differentColor = getSlightlyDifferentColor(baseColor, level);
+
+            const randomIndex = Math.floor(Math.random() * gridSize * gridSize);
+
+            for (let i = 0; i < gridSize * gridSize; i++) {
+                const square = document.createElement('div');
+                square.classList.add('square');
+                square.style.backgroundColor = i === randomIndex ? differentColor : baseColor;
+                square.addEventListener('click', () => handleSquareClick(i === randomIndex));
+                gameContainer.appendChild(square);
+            }
+        }
+
+        function handleSquareClick(isCorrect) {
+            if (isCorrect) {
+                level++;
+            } else {
+                level = 1;
+            }
+            startGame();
+        }
+
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgb(${r},${g},${b})`;
+        }
+
+        function getSlightlyDifferentColor(color, level) {
+            const colorDiff = Math.max(1, 20 - level); // Decrease color difference as level increases
+            const [r, g, b] = color.match(/\d+/g).map(Number);
+
+            const newR = Math.min(255, Math.max(0, r + (Math.random() > 0.5 ? colorDiff : -colorDiff)));
+            const newG = Math.min(255, Math.max(0, g + (Math.random() > 0.5 ? colorDiff : -colorDiff)));
+            const newB = Math.min(255, Math.max(0, b + (Math.random() > 0.5 ? colorDiff : -colorDiff)));
+
+            return `rgb(${newR},${newG},${newB})`;
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
