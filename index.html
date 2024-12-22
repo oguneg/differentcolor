@@ -27,6 +27,9 @@
             width: 50px;
             height: 50px;
         }
+        #tweet-button {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -35,12 +38,14 @@
         <h1>Best Level: <span id="best-level">1</span></h1>
     </div>
     <div id="game-container"></div>
+    <a id="tweet-button" href="#" target="_blank">Tweet Your High Score</a>
     <script>
         let level = 1;
         let bestLevel = 1;
         const gameContainer = document.getElementById('game-container');
         const currentLevelElement = document.getElementById('current-level');
         const bestLevelElement = document.getElementById('best-level');
+        const tweetButton = document.getElementById('tweet-button');
 
         function startGame() {
             gameContainer.innerHTML = '';
@@ -48,6 +53,7 @@
             if (level > bestLevel) {
                 bestLevel = level;
                 bestLevelElement.textContent = bestLevel;
+                updateTweetButton(bestLevel);
             }
 
             const gridSize = level + 2; // Increase grid size with level
@@ -92,6 +98,12 @@
             const newB = Math.min(255, Math.max(0, b + (Math.random() > 0.5 ? colorDiff : -colorDiff)));
 
             return `rgb(${newR},${newG},${newB})`;
+        }
+
+        function updateTweetButton(bestLevel) {
+            const tweetText = `I reached level ${bestLevel} in the "Find the Different Color" game! Can you beat my score?`;
+            const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(window.location.href)}`;
+            tweetButton.href = tweetUrl;
         }
 
         startGame();
